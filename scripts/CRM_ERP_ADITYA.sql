@@ -62,3 +62,11 @@ WITH(
 	);
 
 
+TRUNCATE TABLE bronze.crm_prd_info;
+BULK INSERT  bronze.crm_prd_info
+FROM 'D:\SQL with Baara\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
+WITH(
+	FIRSTROW=2,
+	FIELDTERMINATOR = ',',
+	TABLOCK
+	);
