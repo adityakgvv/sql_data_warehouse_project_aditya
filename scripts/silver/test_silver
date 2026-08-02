@@ -120,7 +120,57 @@ FROM silver.crm_cust_info;
 SELECT DISTINCT cst_marital_status
 FROM silver.crm_cust_info;
 
+-------------------------------------------------------------------------------------------------
+--Check  for Nulls  or Duplicates in Primary Key
+--Exception :NO result
 
+SELECT 
+cst_id,
+count(*)
+from silver.crm_cust_info
+group by cst_id
+HAVING COUNT(*) >1 or cst_id is NUll;
+
+SELECT 
+*
+FROM(
+SELECT 
+*,ROW_NUMBER() OVER(PARTITION BY CST_ID order by cst_create_date DESC) as flag_last
+FROM silver.crm_cust_info
+)t WHERE flag_last!=1;
+
+
+
+
+
+
+--Check unwanted spaces
+--Expectation :No Result
+SELECT cst_firstname
+FROM
+silver.crm_cust_info
+WHERE cst_firstname !=TRIM(cst_firstname);
+
+  SELECT cst_lastname
+FROM
+silver.crm_cust_info
+WHERE cst_lastname !=TRIM(cst_lastname);
+
+SELECT cst_gndr
+FROM
+silver.crm_cust_info
+WHERE cst_gndr !=TRIM(cst_gndr);
+
+--Exception :No result 
+
+SELECT cst_key
+FROM silver.crm_cust_info
+WHERE cst_key!=TRIM(cst_key);
+
+
+--Data Standadization & Consistency
+SELECT DISTINCT cst_gndr
+FROM silver.crm_cust_info;
 
 
 ----------------------------------------------------------------------------------------------------
