@@ -16,6 +16,12 @@ SELECT
 FROM bronze.crm_cust_info
 )t WHERE flag_last!=1;
 
+SELECT *
+FROM(
+SELECT *
+,ROW_NUMBER() OVER(PARTITION BY CST_ID order by cst_create_date DESC) as flag_last
+FROM bronze.crm_cust_info)t WHERE flag_last =1;
+
 
 SELECT 
 *,ROW_NUMBER() OVER(PARTITION BY CST_ID order by cst_create_date DESC) as flag_last
