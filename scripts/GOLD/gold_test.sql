@@ -159,3 +159,6 @@ SELECT sd.sls_ord_num as order_number
   on sd.sls_prd_key = pr.product_number
   LEFT JOIN gold.dim_customers cu
   on sd.sls_cust_id =cu.customer_id;
+
+
+1:03:27
