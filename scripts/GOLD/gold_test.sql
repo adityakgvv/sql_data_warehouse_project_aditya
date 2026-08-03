@@ -161,4 +161,14 @@ SELECT sd.sls_ord_num as order_number
   on sd.sls_cust_id =cu.customer_id;
 
 
-1:03:27
+--1:03:27
+
+
+--Foreign Key integrity(Dimension)
+SELECT *
+FROM gold.fact_sales f
+LEFT JOIN gold.dim_customers c
+ON c.customer_key = f.customer_key
+LEFT JOIN gold.dim_products p
+ON p.product_key = f.product_key
+WHERE p.product_key IS NULL;
