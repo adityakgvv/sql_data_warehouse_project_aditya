@@ -508,5 +508,59 @@ INSERT INTO silver.crm_sales_details (
  OR sls_sales <=0  OR sls_quantity <=0 OR sls_price <=0
  ORDER  BY sls_sales ,sls_quantity,sls_price;
 
+-------------------------------------------------Build silver layer Clean & Load erp_cust_az12----------------
+SELECT
+cid,
+CASE WHEN cid LIKE 'NAS%' THEN  SUBSTRING (cid,4,LEN(cid))
+	ELSE  cid
+END  AS cid,
+bdate,
+gen
+FROM bronze.erp_cust_az12
+WHERE CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING(cid,4,LEN(cid))
+	ELSE cid
+	END NOT IN (SELECT DISTINCT cst_key from silver.crm_cust_info);
 
-01:02:19.02
+
+SELECT
+cid,
+CASE WHEN cid LIKE 'NAS%' THEN  SUBSTRING (cid,4,LEN(cid))
+	ELSE  cid
+END  AS cid,
+CASE WHEN bdate > getdate() THEN NULL
+	ELSE bdate
+END as bdate,
+CASE WHEN UPPER(trim(gen)) IN ('F','FEMALE') THEN 'Female'
+	WHEN UPPER(TRIM(gen)) IN ('M','MALE') THEN 'Male'
+	ELSE 'n/a'
+	END as gen
+FROM bronze.erp_cust_az12;
+
+
+SELECT DISTINCT 
+bdate
+FROM bronze.erp_cust_az12
+WHERE bdate < '1924-01-01' OR  bdate > GETDATE();
+
+SELECT * FROM [silver].[crm_cust_info];
+
+SELECT DISTINCT
+gen,
+CASE WHEN UPPER(trim(gen)) IN ('F','FEMALE') THEN 'Femake'
+	WHEN UPPER(TRIM(gen)) IN ('M','MALE') THEN 'Male'
+	ELSE 'n/a'
+	END as gen
+FROM bronze.erp_cust_az12;
+INSERT INTO silver.erp_cust_az12(cid,bdate,gen)
+SELECT
+CASE WHEN cid LIKE 'NAS%' THEN  SUBSTRING (cid,4,LEN(cid))
+	ELSE  cid
+END  AS cid,
+CASE WHEN bdate > getdate() THEN NULL
+	ELSE bdate
+END as bdate,
+CASE WHEN UPPER(trim(gen)) IN ('F','FEMALE') THEN 'Female'
+	WHEN UPPER(TRIM(gen)) IN ('M','MALE') THEN 'Male'
+	ELSE 'n/a'
+	END as gen
+FROM bronze.erp_cust_az12;
